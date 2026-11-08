@@ -20,8 +20,18 @@ footer{text-align:center;padding:17px 0 5px;color:#bd78a0;font-size:12px}.toast{
 @media(max-width:850px){.apps,.planner{grid-column:span 12}.stars,.quote{grid-column:span 6}.calendar{grid-column:span 12}}
 @media(max-width:520px){.wrap{padding:11px}.logo{width:48px;height:48px}.tag{font-size:11px}.clock{min-width:95px;padding:8px}.hero{border-radius:20px}.heroart{font-size:48px}.card{padding:14px;border-radius:19px}.appgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.stars,.quote{grid-column:span 12}.app{min-height:85px}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body><div class="wrap">
+<body>
+<div id="loginGate" style="position:fixed;inset:0;z-index:20;background:#ffe8f4ee;display:grid;place-items:center;padding:20px">
+ <form id="loginForm" style="width:min(440px,100%);background:#fff7fb;border:2px solid white;border-radius:24px;padding:25px;box-shadow:0 10px 26px #c82b7840">
+  <div style="font-size:42px;text-align:center">💎</div><h2 style="font:600 27px Georgia,serif;color:#e40072;text-align:center;margin:8px 0">Glam World Login</h2>
+  <p style="color:#a65c83;text-align:center;margin:0 0 18px">Sign in with your family account to load Evangeline's tasks.</p>
+  <label style="display:block;font-weight:bold;color:#70234b;margin:10px 0 5px" for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" required style="width:100%;padding:13px;border:1px solid #f5bfd8;border-radius:12px">
+  <label style="display:block;font-weight:bold;color:#70234b;margin:12px 0 5px" for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required style="width:100%;padding:13px;border:1px solid #f5bfd8;border-radius:12px">
+  <button class="btn" type="submit" id="loginButton" style="width:100%;margin-top:16px">Sign in</button><p id="loginError" role="alert" style="color:#b42318;font-size:13px;min-height:18px"></p>
+ </form>
+</div><div class="wrap">
 <header><div class="brand"><div class="logo">💎</div><div><h1>Evangeline Maliyah</h1><div class="tag">BARBIE GLAM WORLD · DREAM BIG, SHINE BRIGHT ✨</div></div></div><div class="clock"><strong id="time">--:--</strong><small id="date">Today</small></div></header>
 <section class="hero"><div><h2>Hey, Glam Girl! 💖</h2><p>Today is your runway. Be kind, be bold, and sparkle your way!</p></div><div class="heroart">👑💅</div></section>
 <main class="grid">
@@ -41,17 +51,53 @@ footer{text-align:center;padding:17px 0 5px;color:#bd78a0;font-size:12px}.toast{
 <section class="card calendar"><h3>📅 My Day</h3><div id="month" class="month"></div><div id="days" class="days"></div></section>
 </main><footer>Designed with love for Evangeline Maliyah · Shine bright, take breaks, and have fun! 💖</footer></div><div class="toast" id="toast" role="status"></div>
 <script>
-const $=id=>document.getElementById(id);function read(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-let tasks=read('eva_glam_tasks',['Make my bed','Brush my teeth','Read for 10 minutes','Put my toys away']),stars=Math.max(0,Number(read('eva_glam_stars',0))||0);
+const SUPABASE_URL = "https://wadlanikeoirzvjutokn.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_j1b897taWTMPsot0TzkEAg_fhJQjNWp";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $=id=>document.getElementById(id);
+let currentUser=null, tasks=[], stars=Math.max(0,Number(read('eva_glam_stars',0))||0);
+function read(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 const thoughts=['I am smart, strong, kind, and totally one of a kind! 💖','I can try new things and learn as I go.','My kindness makes me shine. ✨','I am brave enough to ask for help.','I have wonderful ideas to share. 💎','I sparkle brightest when I am myself!'];
 function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1700)}
-function drawTasks(){$('tasks').innerHTML='';tasks.forEach((t,i)=>{let l=document.createElement('label');l.className='task'+(t.done?' done':'');let c=document.createElement('input');c.type='checkbox';c.checked=!!t.done;c.addEventListener('change',()=>{tasks[i].done=c.checked;save('eva_glam_tasks',tasks);drawTasks();if(c.checked){stars++;save('eva_glam_stars',stars);drawStars();toast('You earned a sparkle star! ⭐')}});let s=document.createElement('span');s.textContent=t.text;let x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Delete '+t.text);x.addEventListener('click',e=>{e.preventDefault();tasks.splice(i,1);save('eva_glam_tasks',tasks);drawTasks()});l.append(c,s,x);$('tasks').append(l)})}
+function showLogin(show){$('loginGate').style.display=show?'grid':'none'}
+function showError(message){$('loginError').textContent=message}
+async function loadTasks(){
+ const {data,error}=await db.from('family_tasks').select('id,title,is_completed').eq('owner_id',currentUser.id).eq('child','Evangeline').order('created_at',{ascending:true});
+ if(error){toast('Could not load tasks: '+error.message);return}
+ tasks=(data||[]).map(r=>({id:r.id,text:r.title,done:!!r.is_completed}));
+ if(!tasks.length){
+  const starter=['Make my bed','Brush my teeth','Read for 10 minutes','Put my toys away'];
+  const rows=starter.map(title=>({owner_id:currentUser.id,child:'Evangeline',title,is_completed:false}));
+  const result=await db.from('family_tasks').insert(rows).select('id,title,is_completed');
+  if(result.error){toast('Tasks loaded, but starter tasks could not be added: '+result.error.message);return}
+  tasks=(result.data||[]).map(r=>({id:r.id,text:r.title,done:!!r.is_completed}));
+ }
+ drawTasks();
+}
+function drawTasks(){
+ $('tasks').innerHTML='';
+ tasks.forEach((t,i)=>{
+  let l=document.createElement('label');l.className='task'+(t.done?' done':'');
+  let c=document.createElement('input');c.type='checkbox';c.checked=!!t.done;
+  c.addEventListener('change',async()=>{const value=c.checked;const {error}=await db.from('family_tasks').update({is_completed:value}).eq('id',t.id).eq('owner_id',currentUser.id);if(error){toast('Could not update task: '+error.message);c.checked=!value;return}tasks[i].done=value;drawTasks();if(value){stars++;save('eva_glam_stars',stars);drawStars();toast('You earned a sparkle star! ⭐')}});
+  let s=document.createElement('span');s.textContent=t.text;
+  let x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Delete '+t.text);
+  x.addEventListener('click',async e=>{e.preventDefault();const {error}=await db.from('family_tasks').delete().eq('id',t.id).eq('owner_id',currentUser.id);if(error){toast('Could not delete task: '+error.message);return}tasks.splice(i,1);drawTasks()});
+  l.append(c,s,x);$('tasks').append(l)
+ });
+}
 function drawStars(){$('starrow').innerHTML='';let count=Math.min(10,Math.max(5,Math.ceil((stars+1)/5)*5));for(let i=0;i<count;i++){let s=document.createElement('span');s.className='star'+(i<stars?'':' empty');s.textContent=i<stars?'★':'☆';$('starrow').append(s)}$('starCount').textContent=stars+' star'+(stars===1?'':'s')+' earned'+(stars>=5?' — superstar status!':'')}
 function clock(){let d=new Date();$('time').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});$('date').textContent=d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}
 function calendar(){let d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();$('month').textContent=d.toLocaleDateString([],{month:'long',year:'numeric'});$('days').innerHTML='';'SMTWTFS'.split('').forEach(x=>{let b=document.createElement('b');b.textContent=x;$('days').append(b)});for(let i=0;i<first;i++)$('days').append(document.createElement('span'));for(let n=1;n<=last;n++){let s=document.createElement('span');s.textContent=n;if(n===d.getDate())s.className='today';$('days').append(s)}}
-$('addTask').onclick=()=>{let v=$('newTask').value.trim();if(!v)return;tasks.push({text:v,done:false});save('eva_glam_tasks',tasks);$('newTask').value='';drawTasks()};$('newTask').addEventListener('keydown',e=>{if(e.key==='Enter')$('addTask').click()});
-$('earn').onclick=()=>{stars++;save('eva_glam_stars',stars);drawStars();toast('You are a superstar! 💖')};$('reset').onclick=()=>{if(confirm('Reset the reward stars?')){stars=0;save('eva_glam_stars',stars);drawStars()}};
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginButton').disabled=true;$('loginButton').textContent='Signing in…';showError('');const {data,error}=await db.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});$('loginButton').disabled=false;$('loginButton').textContent='Sign in';if(error){showError(error.message);return}currentUser=data.user;showLogin(false);await loadTasks()});
+$('addTask').onclick=async()=>{let v=$('newTask').value.trim();if(!v)return;const {data,error}=await db.from('family_tasks').insert({owner_id:currentUser.id,child:'Evangeline',title:v,is_completed:false}).select('id,title,is_completed').single();if(error){toast('Could not add task: '+error.message);return}tasks.push({id:data.id,text:data.title,done:data.is_completed});$('newTask').value='';drawTasks()};
+$('newTask').addEventListener('keydown',e=>{if(e.key==='Enter')$('addTask').click()});
+$('earn').onclick=()=>{stars++;save('eva_glam_stars',stars);drawStars();toast('You are a superstar! 💖')};
+$('reset').onclick=()=>{if(confirm('Reset the reward stars?')){stars=0;save('eva_glam_stars',stars);drawStars()}};
 $('newQuote').onclick=()=>{$('quote').textContent=thoughts[Math.floor(Math.random()*thoughts.length)]};
 document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.url,'_blank','noopener')));
-drawTasks();drawStars();clock();calendar();setInterval(clock,30000);
+db.auth.getSession().then(async({data,error})=>{if(error||!data.session){showLogin(true);return}currentUser=data.session.user;showLogin(false);await loadTasks()});
+db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){currentUser=null;tasks=[];showLogin(true)}});
+drawStars();clock();calendar();setInterval(clock,30000);
 </script></body></html>
