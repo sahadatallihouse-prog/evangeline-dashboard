@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#ff1685">
+<title>Evangeline Maliyah — Barbie Glam World</title>
+<style>
+:root{--hot:#ff1685;--pink:#ff75b7;--pale:#ffe0ef;--light:#fff3f9;--purple:#c6a0ff;--ink:#70234b;--muted:#a65c83;--gold:#ffd76b;--shadow:0 10px 26px #c82b7840}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--ink);font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at 15% 10%,#fff 0 4%,transparent 22%),radial-gradient(circle at 90% 30%,#ffd1e8 0 3%,transparent 20%),linear-gradient(135deg,#ffedf6,#ffd2e8 50%,#f4e6ff);background-attachment:fixed}
+button,input{font:inherit}button{touch-action:manipulation;cursor:pointer}.wrap{max-width:1450px;margin:auto;padding:clamp(13px,2vw,28px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}.brand{display:flex;align-items:center;gap:13px}.logo{width:58px;height:58px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#ff1685,#ff8bc2);color:white;font-size:31px;box-shadow:var(--shadow);border:2px solid #fff8}h1{font-family:Georgia,serif;font-size:clamp(23px,3.1vw,39px);margin:0;color:#e40072;text-shadow:0 2px #fff}.tag{font-size:13px;color:var(--muted);margin-top:4px}.clock{background:#fff9;border:1px solid white;border-radius:18px;padding:10px 15px;text-align:right;box-shadow:var(--shadow);min-width:115px}.clock strong{font-size:clamp(20px,2.4vw,29px);color:#ed1680}.clock small{display:block;color:var(--muted)}
+.hero{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:clamp(19px,3vw,32px);margin-bottom:17px;border:2px solid #fff;border-radius:27px;background:linear-gradient(110deg,#ff1685,#ff70b2 57%,#d5a5ff);color:white;box-shadow:var(--shadow)}.hero:after{content:"✦  ♡  ✦  ♡  ✦";position:absolute;right:8%;top:12px;color:#fff8;font-size:24px;letter-spacing:10px}.hero h2{font:600 clamp(24px,3.4vw,39px) Georgia,serif;margin:0 0 8px}.hero p{margin:0;font-size:clamp(14px,1.6vw,17px);color:#fff5}.heroart{font-size:clamp(53px,8vw,94px);filter:drop-shadow(0 6px 7px #7d124e55);z-index:1}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}.card{background:#fffF;border:1.5px solid white;border-radius:23px;padding:18px;box-shadow:var(--shadow);min-width:0}.card h3{margin:0 0 13px;color:#e40072;font:600 20px Georgia,serif;display:flex;align-items:center;gap:8px}.apps{grid-column:span 7}.planner{grid-column:span 5}.stars{grid-column:span 5}.quote{grid-column:span 4}.calendar{grid-column:span 3}
+.appgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.app{min-height:98px;padding:10px 5px;border:1.5px solid #ffd0e5;border-radius:19px;background:linear-gradient(150deg,#fff,#ffe5f1);color:#8d285b;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 10px #e44c961c;font-size:14px}.app span{font-size:31px}.app:active,.btn:active{transform:scale(.97)}.hint{font-size:12px;color:#b07a96;margin:11px 2px 0}
+.tasks{display:grid;gap:9px}.task{display:flex;align-items:center;gap:10px;background:#fff2f8;padding:10px 12px;border-radius:14px;font-size:15px}.task input{width:22px;height:22px;accent-color:var(--hot)}.task span{flex:1}.task.done span{text-decoration:line-through;color:#bb91a8}.task button{border:0;background:none;color:#c17a9b;font-size:20px;padding:2px 7px}.add{display:flex;gap:8px;margin-top:11px}.add input{flex:1;min-width:0;border:1px solid #f5bfd8;border-radius:13px;padding:11px;background:white;color:var(--ink)}.btn{min-height:44px;border:0;border-radius:14px;padding:10px 14px;background:linear-gradient(100deg,#ff1685,#ff70b2);color:white;font-weight:800;box-shadow:0 4px 9px #ef5a9a35}.btn.alt{background:#eee1ff;color:#794b9e;box-shadow:none}
+.starrow{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 12px}.star{font-size:29px;color:#ffd76b;text-shadow:0 2px 0 #f0a92a}.star.empty{opacity:.25;text-shadow:none}.small{font-size:14px;color:#ad7692}.quoteBox{min-height:110px;display:grid;place-items:center;text-align:center;border-radius:17px;padding:14px;background:linear-gradient(140deg,#ffe3f0,#f0e4ff);font:italic 19px Georgia,serif;color:#a32e6b}.quote .btn{width:100%;margin-top:10px}
+.month{font-weight:800;color:#a74478;margin-bottom:8px}.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12px}.days b{color:#d34b91;padding:5px 0}.days span{padding:6px 0;border-radius:9px}.days .today{background:#ff1685;color:white;font-weight:800}
+footer{text-align:center;padding:17px 0 5px;color:#bd78a0;font-size:12px}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#8b2458;color:white;padding:11px 17px;border-radius:22px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
+@media(max-width:850px){.apps,.planner{grid-column:span 12}.stars,.quote{grid-column:span 6}.calendar{grid-column:span 12}}
+@media(max-width:520px){.wrap{padding:11px}.logo{width:48px;height:48px}.tag{font-size:11px}.clock{min-width:95px;padding:8px}.hero{border-radius:20px}.heroart{font-size:48px}.card{padding:14px;border-radius:19px}.appgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.stars,.quote{grid-column:span 12}.app{min-height:85px}}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="brand"><div class="logo">💎</div><div><h1>Evangeline Maliyah</h1><div class="tag">BARBIE GLAM WORLD · DREAM BIG, SHINE BRIGHT ✨</div></div></div><div class="clock"><strong id="time">--:--</strong><small id="date">Today</small></div></header>
+<section class="hero"><div><h2>Hey, Glam Girl! 💖</h2><p>Today is your runway. Be kind, be bold, and sparkle your way!</p></div><div class="heroart">👑💅</div></section>
+<main class="grid">
+<section class="card apps"><h3>💗 My Glam App Collection</h3><div class="appgrid">
+<button class="app" data-url="https://www.youtube.com/"><span>▶️</span>Videos</button>
+<button class="app" data-url="https://music.amazon.com/"><span>🎧</span>Music</button>
+<button class="app" data-url="https://www.starfall.com/"><span>📚</span>Reading</button>
+<button class="app" data-url="https://www.coloringpages.com/"><span>🎨</span>Art Studio</button>
+<button class="app" data-url="https://kids.nationalgeographic.com/"><span>🦄</span>Discover</button>
+<button class="app" data-url="https://www.pbs.org/parents/"><span>🌈</span>Play & Learn</button>
+<button class="app" data-url="https://www.google.com/"><span>🔎</span>Search</button>
+<button class="app" data-url="https://www.amazon.com/gp/video/storefront/"><span>🍿</span>Movies</button>
+</div><p class="hint">Tap a tile to open the website. Check with your grown-up before visiting a new site.</p></section>
+<section class="card planner"><h3>🎀 My Daily Glam Plan</h3><div id="tasks" class="tasks"></div><div class="add"><input id="newTask" maxlength="48" placeholder="Add a task…"><button class="btn" id="addTask">Add +</button></div></section>
+<section class="card stars"><h3>⭐ Superstar Reward Stars</h3><div id="starrow" class="starrow"></div><div id="starCount" class="small">0 stars earned</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="earn">I rocked it! +1 ⭐</button><button class="btn alt" id="reset">Reset</button></div></section>
+<section class="card quote"><h3>💌 Daily Glam Affirmation</h3><div class="quoteBox" id="quote">I am smart, strong, kind, and totally one of a kind!</div><button class="btn alt" id="newQuote">New sparkle thought ✨</button></section>
+<section class="card calendar"><h3>📅 My Day</h3><div id="month" class="month"></div><div id="days" class="days"></div></section>
+</main><footer>Designed with love for Evangeline Maliyah · Shine bright, take breaks, and have fun! 💖</footer></div><div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);function read(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let tasks=read('eva_glam_tasks',['Make my bed','Brush my teeth','Read for 10 minutes','Put my toys away']),stars=Math.max(0,Number(read('eva_glam_stars',0))||0);
+const thoughts=['I am smart, strong, kind, and totally one of a kind! 💖','I can try new things and learn as I go.','My kindness makes me shine. ✨','I am brave enough to ask for help.','I have wonderful ideas to share. 💎','I sparkle brightest when I am myself!'];
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1700)}
+function drawTasks(){$('tasks').innerHTML='';tasks.forEach((t,i)=>{let l=document.createElement('label');l.className='task'+(t.done?' done':'');let c=document.createElement('input');c.type='checkbox';c.checked=!!t.done;c.addEventListener('change',()=>{tasks[i].done=c.checked;save('eva_glam_tasks',tasks);drawTasks();if(c.checked){stars++;save('eva_glam_stars',stars);drawStars();toast('You earned a sparkle star! ⭐')}});let s=document.createElement('span');s.textContent=t.text;let x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Delete '+t.text);x.addEventListener('click',e=>{e.preventDefault();tasks.splice(i,1);save('eva_glam_tasks',tasks);drawTasks()});l.append(c,s,x);$('tasks').append(l)})}
+function drawStars(){$('starrow').innerHTML='';let count=Math.min(10,Math.max(5,Math.ceil((stars+1)/5)*5));for(let i=0;i<count;i++){let s=document.createElement('span');s.className='star'+(i<stars?'':' empty');s.textContent=i<stars?'★':'☆';$('starrow').append(s)}$('starCount').textContent=stars+' star'+(stars===1?'':'s')+' earned'+(stars>=5?' — superstar status!':'')}
+function clock(){let d=new Date();$('time').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});$('date').textContent=d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}
+function calendar(){let d=new Date(),y=d.getFullYear(),m=d.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();$('month').textContent=d.toLocaleDateString([],{month:'long',year:'numeric'});$('days').innerHTML='';'SMTWTFS'.split('').forEach(x=>{let b=document.createElement('b');b.textContent=x;$('days').append(b)});for(let i=0;i<first;i++)$('days').append(document.createElement('span'));for(let n=1;n<=last;n++){let s=document.createElement('span');s.textContent=n;if(n===d.getDate())s.className='today';$('days').append(s)}}
+$('addTask').onclick=()=>{let v=$('newTask').value.trim();if(!v)return;tasks.push({text:v,done:false});save('eva_glam_tasks',tasks);$('newTask').value='';drawTasks()};$('newTask').addEventListener('keydown',e=>{if(e.key==='Enter')$('addTask').click()});
+$('earn').onclick=()=>{stars++;save('eva_glam_stars',stars);drawStars();toast('You are a superstar! 💖')};$('reset').onclick=()=>{if(confirm('Reset the reward stars?')){stars=0;save('eva_glam_stars',stars);drawStars()}};
+$('newQuote').onclick=()=>{$('quote').textContent=thoughts[Math.floor(Math.random()*thoughts.length)]};
+document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.url,'_blank','noopener')));
+drawTasks();drawStars();clock();calendar();setInterval(clock,30000);
+</script></body></html>
