@@ -37,19 +37,13 @@ footer{text-align:center;padding:17px 0 5px;color:#bd78a0;font-size:12px}.toast{
 <main class="grid">
 <section class="card apps"><h3>💗 My Glam App Collection</h3><div class="appgrid">
 <button class="app" data-category="Videos"><span>▶️</span>Videos</button>
-
-<button class="app" data-url="https://www.starfall.com/"><span>📚</span>Reading</button>
-<button class="app" data-url="https://www.coloringpages.com/"><span>🎨</span>Art Studio</button>
-<button class="app" data-url="https://kids.nationalgeographic.com/"><span>🦄</span>Discover</button>
-<button class="app" data-url="https://www.pbs.org/parents/"><span>🌈</span>Play & Learn</button>
-<button class="app" data-url="https://www.google.com/"><span>🔎</span>Search</button>
-<button class="app" data-category="Movies"><span>🍿</span>Movies</button>
-<button class="app" data-music="true"><span>🎵</span>Sound Lab</button>
-<button class="app" data-url="https://awesomeearthmovers.com/news/category/blog/"><span>🚜</span>Heavy Machines</button>
+<button class="app" data-music="true"><span>🎧</span>Sound Lab</button>
+<button class="app" data-url="https://kids.nationalgeographic.com/"><span>📚</span>Reading Lab</button>
 <button class="app" data-url="https://www.kidsnews.com.au/animals"><span>🦈</span>Animal Explorer</button>
 <button class="app" data-url="https://www.sciencejournalforkids.org/"><span>🔬</span>Science Zone</button>
 <button class="app" data-url="https://www.kiddle.co/"><span>🧫</span>Research</button>
-<button class="app" data-url="https://www.caranddriver.com/"><span>🚗</span>Vehicle Zone</button>
+<button class="app" data-url="https://agforkids.com/"><span>🌱</span>Plants/Flowers</button>
+<button class="app" data-url="https://www.howweelearn.com/50-fun-crafts-for-kids/"><span>✂️</span>Craft Zone</button>
 </div><p class="hint">Tap a tile to open the website. Check with your grown-up before visiting a new site.</p></section>
 <section class="card planner"><h3>🎀 My Daily Glam Plan</h3><div id="tasks" class="tasks"></div><div class="add"><input id="newTask" maxlength="48" placeholder="Add a task…"><button class="btn" id="addTask">Add +</button></div></section>
 <section class="card stars"><h3>⭐ Superstar Reward Stars</h3><div id="starrow" class="starrow"></div><div id="starCount" class="small">0 stars earned</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="earn">I rocked it! +1 ⭐</button><button class="btn alt" id="reset">Reset</button></div></section>
@@ -120,6 +114,7 @@ document.querySelectorAll('.app[data-music]').forEach(b=>b.addEventListener('cli
 function showApprovedVideos(category){const today=new Date().toISOString().slice(0,10);const list=approvedVideos.filter(v=>v.category===category&&v.is_active&&v.available_from<=today&&(!v.available_until||v.available_until>=today));const modal=$('videoModal'),player=$('videoPlayer');$('videoModalTitle').textContent=category;player.innerHTML='';if(!list.length){player.innerHTML='<div style="color:white;display:grid;place-items:center;height:100%;padding:20px;text-align:center">No videos are ready yet. Ask your grown-up to add one! 💖</div>';modal.style.display='grid';return}const choices=document.createElement('div');choices.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;padding:12px';list.forEach(v=>{const b=document.createElement('button');b.className='btn';b.textContent='▶ '+v.title;b.onclick=()=>{player.innerHTML='';const embed=youtubeEmbed(v.video_url);if(embed){const f=document.createElement('iframe');f.src=embed;f.title=v.title;f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';f.style.cssText='width:100%;height:100%;border:0';player.append(f)}else{const a=document.createElement('a');a.href=v.video_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open approved video: '+v.title;a.style.cssText='color:white;display:grid;place-items:center;height:100%;padding:20px';player.append(a)}};choices.append(b)});player.append(choices);modal.style.display='grid'}
 $('closeVideo').onclick=()=>{$('videoModal').style.display='none';$('videoPlayer').innerHTML=''};$('videoModal').addEventListener('click',e=>{if(e.target===$('videoModal'))$('closeVideo').click()});
 async function loadApprovedVideos(){if(!currentUser)return;const {data,error}=await db.from('approved_videos').select('category,title,video_url,available_from,available_until,is_active').eq('owner_id',currentUser.id);if(error){toast('Video library unavailable');return}approvedVideos=data||[]}
+document.querySelectorAll('.app[data-url]').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.url,'_blank','noopener')));
 document.querySelectorAll('.app[data-category]').forEach(b=>b.addEventListener('click',()=>showApprovedVideos(b.dataset.category)));
 
 db.auth.getSession().then(async({data,error})=>{if(error||!data.session){showLogin(true);return}currentUser=data.session.user;showLogin(false);await loadTasks();await loadApprovedVideos()});
